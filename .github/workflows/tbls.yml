@@ -1,0 +1,54 @@
+name: Create tbls documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "db/migrations/**"
+
+jobs:
+  doc:
+    runs-on: ubuntu-latest
+    steps:
+      # チェックアウト
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # golang-migrateをインストール
+      - name: Install golang-migrate
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.0/migrate.linux-amd64.tar.gz | tar xvz
+          sudo mv migrate.linux-amd64 /usr/local/bin/migrate
+
+      # MySQLをセットアップ
+      - name: Set up MySQL
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: dbname
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-server
+          sudo service mysql start
+          sudo mysql -e "CREATE DATABASE IF NOT EXISTS dbname;"
+          sudo mysql -e "CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';"
+          sudo mysql -e "GRANT ALL PRIVILEGES ON dbname.* TO 'user'@'localhost';"
+          sudo mysql -e "FLUSH PRIVILEGES;"
+
+      # データベースマイグレーションの実行
+      - name: Run database migrations
+        run: migrate -path db/migrations -database "mysql://user:password@tcp(localhost:3306)/dbname" up
+
+      # tblsをセットアップ
+      - uses: k1low/setup-tbls@v1
+
+      # ドキュメントを生成
+      - name: Run tbls to generate database documentation
+        run: tbls doc mysql://user:password@tcp(localhost:3306)/dbname -o docs/tbls
+
+      # 生成されたドキュメントをGitHub Pagesにデプロイ (オプション)
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/tbls # 生成されたドキュメントのパス
