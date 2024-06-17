@@ -46,7 +46,7 @@ jobs:
 
       # ドキュメントを生成
       - name: Run tbls to generate database documentation
-        run: tbls doc mysql://root:password@tcp(127.0.0.1:3306)/dbname -o docs/tbls
+        run: tbls doc "mysql://root:password@tcp(127.0.0.1:3306)/dbname" -o docs/tbls
 
       # 生成されたドキュメントをGitHub Pagesにデプロイ (オプション)
       - name: Deploy to GitHub Pages
