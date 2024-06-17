@@ -33,6 +33,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y migrate
 
+      - name: setup mysql
+        run: |
+          mysql -h localhost -u root -ppassword -e "CREATE DATABASE dbname"
+
       # データベースマイグレーションの実行
       - name: Run database migrations
         run: migrate -path db/migrations -database "mysql://root:password@tcp(localhost:3306)/dbname" up
