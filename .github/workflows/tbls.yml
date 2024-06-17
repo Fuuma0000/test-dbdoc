@@ -50,7 +50,9 @@ jobs:
 
       # 生成されたドキュメントをGitHub Pagesにデプロイ (オプション)
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/tbls # 生成されたドキュメントのパス
+        run: |
+          git config user.name Fuuma
+          git config user.email masa81hiro69@gmail.com
+          git add docs/tbls
+          git commit -m "generated"
+          git push
