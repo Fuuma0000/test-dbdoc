@@ -1,2 +1,2 @@
-dsn: mysql://root:password@tcp(127.0.0.1:3306)/dbname
+dsn: mysql://root:password@127.0.0.1:3306/dbname
 docPath: docs/tbls
