@@ -46,18 +46,18 @@ jobs:
 
       - name: setup mysql
         run: |
-          mysql -h localhost -u root -ppassword -e "CREATE DATABASE dbname"
+          mysql -h 127.0.0.1  -u root -ppassword -e "CREATE DATABASE dbname"
 
       # データベースマイグレーションの実行
       - name: Run database migrations
-        run: migrate -path db/migrations -database "mysql://root:password@tcp(localhost:3306)/dbname" up
+        run: migrate -path db/migrations -database "mysql://root:password@tcp(127.0.0.1 :3306)/dbname" up
 
       # tblsをセットアップ
       - uses: k1low/setup-tbls@v1
 
       # ドキュメントを生成
       - name: Run tbls to generate database documentation
-        run: tbls doc mysql://root:password@tcp(localhost:3306)/dbname -o docs/tbls
+        run: tbls doc mysql://root:password@tcp(127.0.0.1 :3306)/dbname -o docs/tbls
 
       # 生成されたドキュメントをGitHub Pagesにデプロイ (オプション)
       - name: Deploy to GitHub Pages
