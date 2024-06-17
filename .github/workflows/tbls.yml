@@ -33,6 +33,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y migrate
 
+      - name: Wait for MySQL service
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h localhost -u root -ppassword; then
+              echo "MySQL is up and running"
+              break
+            fi
+            echo "Waiting for MySQL to be available..."
+            sleep 2
+          done
+
       - name: setup mysql
         run: |
           mysql -h localhost -u root -ppassword -e "CREATE DATABASE dbname"
