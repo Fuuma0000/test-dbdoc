@@ -48,7 +48,6 @@ jobs:
       - name: Run tbls to generate database documentation
         run: tbls doc
 
-      # 生成されたドキュメントをGitHub Pagesにデプロイ (オプション)
       - name: Deploy to GitHub Pages
         run: |
           git config user.name Fuuma
